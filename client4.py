@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar 20 07:05:22 2022
+Created on Sun Mar 20 11:52:25 2022
 
 @author: 11417
 """
@@ -11,10 +11,11 @@ import ssl
 
 server_address = ('127.0.0.1',6666)
 
-cxt = ssl._create_unverified_context()
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+context.load_verify_locations('rsa.crt')
 
-with socket.socket() as sock:
-    with cxt.wrap_socket(sock,server_hostname=server_address[0]) as ssock:
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+    with context.wrap_socket(sock, server_hostname=server_address[0]) as ssock:
         ssock.connect(server_address)
         print(f'local address: {ssock.getsockname()}')
         print("server : ",ssock.recv(1024).decode())
